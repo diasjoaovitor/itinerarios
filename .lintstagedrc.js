@@ -5,7 +5,7 @@ const buildEslintCommand = (filenames) => {
   return [
     `npx prettier --write ${files.join(' --file ')}`,
     `next lint --fix --file ${files.join(' --file ')}`,
-    `npx jest --findRelatedTests ${files.join(' ')} --passWithNoTests`
+    `npx jest --runInBand --findRelatedTests ${files.join(' ')} --passWithNoTests`
   ]
 }
 
