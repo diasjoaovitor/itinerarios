@@ -1,1 +1,4 @@
-export * from './MyComponent'
+'use client'
+
+export * from './Theme'
+export * from './UI/Button'
