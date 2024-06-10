@@ -19,5 +19,4 @@ export const ResetCSS = () => (
 
 export const Wrapper = styled.div`
   color: ${theme.palette.text};
-  padding: ${theme.space.xs};
 `

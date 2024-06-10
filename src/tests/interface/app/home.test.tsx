@@ -2,8 +2,15 @@ import { render, screen } from '@testing-library/react'
 import Home from '@/app/page'
 
 describe('<Home />', () => {
-  test('should render the heading', () => {
+  test('should render the navigation links in the header', () => {
     render(<Home />)
-    expect(screen.getByRole('heading', { name: 'Home', level: 1 }))
+    const [title, home, funcionarios, itinerarios, intervalos] =
+      screen.getAllByRole('link')
+
+    expect(title).toHaveAttribute('href', '/')
+    expect(home).toHaveAttribute('href', '/')
+    expect(funcionarios).toHaveAttribute('href', '/funcionarios')
+    expect(itinerarios).toHaveAttribute('href', '/itinerarios')
+    expect(intervalos).toHaveAttribute('href', '/intervalos')
   })
 })

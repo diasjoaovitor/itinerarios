@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { StyledJsxRegistry } from './lib'
 import { Theme } from '@/components'
 import { theme } from '@/styles'
+import { StyledJsxRegistry } from './lib'
 
 const inter = Inter({ subsets: ['latin'] })
 

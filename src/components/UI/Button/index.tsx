@@ -7,5 +7,5 @@ export const Button = (
     color?: TColor
   }
 ) => {
-  return <S.Button {...props} />
+  return <S.Button {...props} type={props.type || 'button'} />
 }

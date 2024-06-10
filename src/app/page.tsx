@@ -1,9 +1,9 @@
-import { Button } from '@/components'
+import { Button, Header } from '@/components'
 
 const Home = () => {
   return (
     <>
-      <h1>Home</h1>
+      <Header />
       <Button>Click Here</Button>
       <Button color="secondary">Click Here</Button>
     </>

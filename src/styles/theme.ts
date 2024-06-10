@@ -32,7 +32,8 @@ export const theme = {
     light: 300,
     normal: 400,
     bold: 600,
-    xs: '1.2rem',
+    xxs: '0.6rem',
+    xs: '1rem',
     sm: '1.4rem',
     md: '1.6rem',
     lg: '1.8rem',
@@ -45,7 +46,7 @@ export const theme = {
     secondary: '#2DA44E',
     warning: '#f57c00',
     error: '#d32f2f',
-    text: '#fff',
+    text: '#ffffff',
     bg: '#0D1117',
     paper: '#161B22'
   },
@@ -58,6 +59,11 @@ export const theme = {
     xl: '4.0rem',
     xxl: '4.8rem',
     hg: '5.6rem'
+  },
+  device: {
+    mobile: '500px',
+    tablet: '900px',
+    desktop: '1200px'
   },
   hover
 }
