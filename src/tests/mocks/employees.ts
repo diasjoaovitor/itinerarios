@@ -5,31 +5,31 @@ const timestamp = getTimestamp()
 
 export const mockedEmployees: TEmployee[] = [
   {
-    employeeName: 'Employee 1',
+    name: 'João',
     roleId: 1,
     createdAt: timestamp,
     updatedAt: timestamp
   },
   {
-    employeeName: 'Employee 2',
+    name: 'Vitor',
     roleId: 2,
     createdAt: timestamp,
     updatedAt: timestamp
   },
   {
-    employeeName: 'Employee 3',
+    name: 'Cleiton',
     roleId: 3,
     createdAt: timestamp,
     updatedAt: timestamp
   },
   {
-    employeeName: 'Employee 4',
+    name: 'Maria',
     roleId: 1,
     createdAt: timestamp,
     updatedAt: timestamp
   },
   {
-    employeeName: 'Employee 5',
+    name: 'Pedro',
     roleId: 2,
     createdAt: timestamp,
     updatedAt: timestamp

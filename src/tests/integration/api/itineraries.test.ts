@@ -7,9 +7,9 @@ import {
   mockedEmployees,
   mockedItineraries,
   mockedRoles,
-  mockedWorkingHours
+  mockedWorkingDays
 } from '@/tests/mocks'
-import { TDelete, TItinerary, TRole, TUpdate } from '@/types'
+import { TDBDelete, TDBItinerary, TDBRole, TDBUpdate } from '@/types'
 import { getTimestamp, localToUTC } from '@/utils'
 
 const timestamp = getTimestamp()
@@ -44,7 +44,7 @@ describe('Route /api/itineraries', () => {
     await api.post('/roles', mockedRoles)
     await Promise.all([
       api.post('/employees', mockedEmployees),
-      api.post('/working-hours', mockedWorkingHours),
+      api.post('/working-days', mockedWorkingDays),
       api.post('/break-times', mockedBreakTimes)
     ])
 
@@ -55,25 +55,25 @@ describe('Route /api/itineraries', () => {
 
     const { data: result } = await api.get('/itineraries')
 
-    const role = (result as TRole[])[0]
+    const role = (result as TDBRole[])[0]
 
     expect(role).toEqual({
       ...mockedItineraries[0],
-      itineraryId: 4,
+      id: 4,
       createdAt: localToUTC(timestamp),
       updatedAt: localToUTC(timestamp)
     })
   })
 
   test('should fail when adding duplicate itineraries', async () => {
-    const itineraries: TUpdate<TItinerary> = {
+    const itineraries: TDBUpdate<TDBItinerary> = {
       columns: {
-        breakTimeId: 1,
-        workingHourId: 1,
+        morningBreakId: 1,
+        afternoonBreakId: 1,
+        workingDayId: 1,
         employeeId: 1,
         updatedAt: timestamp
       },
-      idKey: 'itineraryId',
       ids: [5, 6]
     }
 
@@ -94,12 +94,11 @@ describe('Route /api/itineraries', () => {
 
     const updatedAt = getTimestamp()
 
-    const itineraries: TUpdate<TItinerary> = {
+    const itineraries: TDBUpdate<TDBItinerary> = {
       columns: {
         employeeId: 4,
         updatedAt
       },
-      idKey: 'itineraryId',
       ids: [5, 6]
     }
 
@@ -109,25 +108,24 @@ describe('Route /api/itineraries', () => {
     expect(data).toEqual({ affectedRows: 2 })
 
     const { data: result } = await api.get('/itineraries')
-    const itinerary = (result as TItinerary[])[1]
+    const itinerary = (result as TDBItinerary[])[1]
 
     expect(itinerary.createdAt).not.toBe(updatedAt)
     expect(itinerary).toEqual({
       ...mockedItineraries[1],
-      itineraryId: 5,
+      id: 5,
       employeeId: 4,
       createdAt: localToUTC(timestamp),
       updatedAt: localToUTC(updatedAt)
-    } as TItinerary)
+    } as TDBItinerary)
   })
 
   test('should delete itineraries correctly', async () => {
     const { status, data } = await api.delete('/itineraries', {
       data: {
-        idKey: 'itineraryId',
         ids: [4, 5, 6],
         table: 'itineraries'
-      } as TDelete
+      } as TDBDelete
     })
 
     expect(status).toBe(200)
@@ -135,6 +133,6 @@ describe('Route /api/itineraries', () => {
 
     const { data: result } = await api.get('/itineraries')
 
-    expect(result).toHaveLength(mockedBreakTimes.length - 3)
+    expect(result).toHaveLength(mockedItineraries.length - 3)
   })
 })

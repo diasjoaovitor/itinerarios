@@ -6,7 +6,7 @@ import {
   mockedEmployees,
   mockedRoles
 } from '@/tests/mocks'
-import { TDelete, TRole, TUpdate } from '@/types'
+import { TDBDelete, TDBRole, TDBUpdate } from '@/types'
 import { getTimestamp, localToUTC } from '@/utils'
 
 const timestamp = getTimestamp()
@@ -30,12 +30,11 @@ describe('Route /api/roles', () => {
     expect(data.insertIds).toEqual([1, 2, 3, 4])
 
     const { data: result } = await api.get('/roles')
-
-    const role = (result as TRole[])[0]
+    const role = (result as TDBRole[])[0]
 
     expect(role).toEqual({
       ...mockedRoles[0],
-      roleId: 1,
+      id: 1,
       createdAt: localToUTC(timestamp),
       updatedAt: localToUTC(timestamp)
     })
@@ -47,12 +46,11 @@ describe('Route /api/roles', () => {
 
     const updatedAt = getTimestamp()
 
-    const roles: TUpdate<TRole> = {
+    const roles: TDBUpdate<TDBRole> = {
       columns: {
-        roleName: 'Updated Role',
+        name: 'Updated Role',
         updatedAt
       },
-      idKey: 'roleId',
       ids: [2]
     }
 
@@ -62,13 +60,13 @@ describe('Route /api/roles', () => {
     expect(data).toEqual({ affectedRows: 1 })
 
     const { data: result } = await api.get('/roles')
-    const role = (result as TRole[])[1]
+    const role = (result as TDBRole[])[1]
 
     expect(role.createdAt).not.toBe(updatedAt)
     expect(role).toEqual({
       ...mockedRoles[1],
-      roleId: 2,
-      roleName: 'Updated Role',
+      id: 2,
+      name: 'Updated Role',
       createdAt: localToUTC(timestamp),
       updatedAt: localToUTC(updatedAt)
     })
@@ -80,10 +78,9 @@ describe('Route /api/roles', () => {
     await api
       .delete('/roles', {
         data: {
-          idKey: 'roleId',
           ids: [1],
           table: 'roles'
-        } as TDelete
+        } as TDBDelete
       })
       .then(() => expect(1 + 1).toBe(3))
       .catch((error: XiorError) => {
@@ -99,10 +96,9 @@ describe('Route /api/roles', () => {
   test('should delete roles correctly', async () => {
     const { status, data } = await api.delete('/roles', {
       data: {
-        idKey: 'roleId',
         ids: [4],
         table: 'roles'
-      } as TDelete
+      } as TDBDelete
     })
 
     expect(status).toBe(200)

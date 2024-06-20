@@ -1,66 +1,52 @@
-type TKeyId =
-  | 'roleId'
-  | 'employeeId'
-  | 'workingHourId'
-  | 'breakTimeId'
-  | 'itineraryId'
-
-export type TUpdate<T> = {
-  columns: Partial<Omit<T, 'createdAt'>> & { updatedAt: string }
-  idKey: TKeyId
+export type TDBUpdate<T> = {
+  columns: Partial<Omit<T, 'createdAt' | 'id'>> & { updatedAt: string }
   ids: number[]
 }
 
-export type TDelete = {
+export type TDBDelete = {
   table: string
-  idKey: TKeyId
   ids: number[]
 }
 
-export type TEmployee = {
-  employeeName: string
+export type TDBEmployee = {
+  name: string
   roleId: number
   createdAt: string
   updatedAt: string
-  employeeId?: number
+  id?: number
 }
 
-export type TRole = {
-  roleName: string
+export type TDBRole = {
+  name: string
   createdAt: string
   updatedAt: string
-  roleId?: number
+  id?: number
 }
 
-export type TWorkingHour = {
+export type TDBWorkingDay = {
   startOfTheWorkingDay: string
   startOfLunch: string
   endOfLunch: string
   endOfTheWorkingDay: string
   createdAt: string
   updatedAt: string
-  workingHourId?: number
+  id?: number
 }
 
-export type TBreakTime = {
+export type TDBBreakTime = {
   start: string
   end: string
   createdAt: string
   updatedAt: string
-  breakTimeId?: number
+  id?: number
 }
 
-export type TItinerary = {
+export type TDBItinerary = {
   employeeId: number
-  workingHourId: number
-  breakTimeId: number
+  workingDayId: number
+  morningBreakId: number
+  afternoonBreakId: number
   createdAt: string
   updatedAt: string
-  itineraryId?: number
+  id?: number
 }
-
-export type TEmployeeItinerary = TEmployee &
-  TRole &
-  TWorkingHour &
-  TBreakTime &
-  TItinerary

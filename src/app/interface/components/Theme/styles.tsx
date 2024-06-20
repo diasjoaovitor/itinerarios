@@ -13,6 +13,7 @@ export const ResetCSS = () => (
     body {
       height: 100vh;
       width: 100vw;
+      background-color: ${theme.palette.bg};
     }
   `}</style>
 )

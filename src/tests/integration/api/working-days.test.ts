@@ -7,9 +7,9 @@ import {
   mockedEmployees,
   mockedItineraries,
   mockedRoles,
-  mockedWorkingHours
+  mockedWorkingDays
 } from '@/tests/mocks'
-import { TWorkingHour, TUpdate, TItinerary, TDelete } from '@/types'
+import { TDBWorkingDay, TDBUpdate, TDBItinerary, TDBDelete } from '@/types'
 import { getTimestamp, localToUTC } from '@/utils'
 
 const timestamp = getTimestamp()
@@ -18,22 +18,22 @@ beforeAll(async () => {
   await prepareTestsEnvironment()
 })
 
-describe('Route /api/working-hours', () => {
+describe('Route /api/working-days', () => {
   test('should return empty data', async () => {
-    const { status, data } = await api.get('/working-hours')
+    const { status, data } = await api.get('/working-days')
 
     expect(status).toBe(200)
     expect(data).toEqual([])
   })
 
-  test('should fail to add working hours when user enters invalid time format', async () => {
+  test('should fail to add working days when user enters invalid time format', async () => {
     await api
-      .post('/working-hours', [
-        ...mockedWorkingHours,
+      .post('/working-days', [
+        ...mockedWorkingDays,
         {
-          ...mockedWorkingHours[0],
+          ...mockedWorkingDays[0],
           startOfTheWorkingDay: '7am'
-        } as TWorkingHour
+        } as TDBWorkingDay
       ])
       .then(() => expect(1 + 1).toBe(3))
       .catch((error: XiorError) => {
@@ -44,29 +44,26 @@ describe('Route /api/working-hours', () => {
       })
   })
 
-  test('should add working hours correctly', async () => {
-    const { status, data } = await api.post(
-      '/working-hours',
-      mockedWorkingHours
-    )
+  test('should add working days correctly', async () => {
+    const { status, data } = await api.post('/working-days', mockedWorkingDays)
 
     expect(status).toBe(200)
     expect(data.insertIds).toEqual([5, 6, 7])
 
-    const { data: result } = await api.get('/working-hours')
+    const { data: result } = await api.get('/working-days')
 
-    const workingHour = (result as TWorkingHour[])[0]
+    const workingDay = (result as TDBWorkingDay[])[0]
 
-    expect(workingHour).toEqual({
-      ...mockedWorkingHours[0],
-      workingHourId: 5,
+    expect(workingDay).toEqual({
+      ...mockedWorkingDays[0],
+      id: 5,
       createdAt: localToUTC(timestamp),
       updatedAt: localToUTC(timestamp)
     })
   })
 
   test('should fail when adding duplicate break times', async () => {
-    const workingHours: TUpdate<TWorkingHour> = {
+    const workingDays: TDBUpdate<TDBWorkingDay> = {
       columns: {
         startOfTheWorkingDay: '07:00',
         startOfLunch: '11:00',
@@ -74,12 +71,11 @@ describe('Route /api/working-hours', () => {
         endOfTheWorkingDay: '16:20',
         updatedAt: timestamp
       },
-      idKey: 'workingHourId',
       ids: [5, 6]
     }
 
     await api
-      .patch('/working-hours', workingHours)
+      .patch('/working-days', workingDays)
       .then(() => expect(1 + 1).toBe(3))
       .catch((error: XiorError) => {
         const { response } = error
@@ -89,34 +85,33 @@ describe('Route /api/working-hours', () => {
       })
   })
 
-  test('should update working hours correctly', async () => {
+  test('should update working days correctly', async () => {
     jest.setTimeout(1000)
     await new Promise((r) => setTimeout(r, 1000))
 
     const updatedAt = getTimestamp()
 
-    const workingHours: TUpdate<TWorkingHour> = {
+    const workingDays: TDBUpdate<TDBWorkingDay> = {
       columns: {
         startOfTheWorkingDay: '08:40:00',
         endOfTheWorkingDay: '18:00:00',
         updatedAt
       },
-      idKey: 'workingHourId',
       ids: [6]
     }
 
-    const { status, data } = await api.patch('/working-hours', workingHours)
+    const { status, data } = await api.patch('/working-days', workingDays)
 
     expect(status).toBe(200)
     expect(data).toEqual({ affectedRows: 1 })
 
-    const { data: result } = await api.get('/working-hours')
-    const role = (result as TWorkingHour[])[1]
+    const { data: result } = await api.get('/working-days')
+    const role = (result as TDBWorkingDay[])[1]
 
     expect(role.createdAt).not.toBe(updatedAt)
     expect(role).toEqual({
-      ...mockedWorkingHours[1],
-      workingHourId: 6,
+      ...mockedWorkingDays[1],
+      id: 6,
       startOfTheWorkingDay: '08:40:00',
       endOfTheWorkingDay: '18:00:00',
       createdAt: localToUTC(timestamp),
@@ -128,24 +123,24 @@ describe('Route /api/working-hours', () => {
     await api.post('/roles', [mockedRoles[0]])
     await Promise.all([
       api.post('/employees', [mockedEmployees[3]]),
-      api.post('/break-times', [mockedBreakTimes[0]])
+      api.post('/break-times', [mockedBreakTimes[0], mockedBreakTimes[3]])
     ])
     await api.post('/itineraries', [
       {
         ...mockedItineraries[0],
-        breakTimeId: 1,
+        morningBreakId: 1,
+        afternoonBreakId: 2,
         employeeId: 1,
-        workingHourId: 5
-      } as TItinerary
+        workingDayId: 5
+      } as TDBItinerary
     ])
 
     await api
-      .delete('/working-hours', {
+      .delete('/working-days', {
         data: {
-          idKey: 'workingHourId',
           ids: [5],
-          table: 'workingHours'
-        } as TDelete
+          table: 'workingDays'
+        } as TDBDelete
       })
       .then(() => expect(1 + 1).toBe(3))
       .catch((error: XiorError) => {
@@ -158,20 +153,19 @@ describe('Route /api/working-hours', () => {
       })
   })
 
-  test('should delete working hours correctly', async () => {
-    const { status, data } = await api.delete('/working-hours', {
+  test('should delete working days correctly', async () => {
+    const { status, data } = await api.delete('/working-days', {
       data: {
-        idKey: 'workingHourId',
         ids: [6, 7],
-        table: 'workingHours'
-      } as TDelete
+        table: 'workingDays'
+      } as TDBDelete
     })
 
     expect(status).toBe(200)
     expect(data).toEqual({ affectedRows: 2 })
 
-    const { data: result } = await api.get('/working-hours')
+    const { data: result } = await api.get('/working-days')
 
-    expect(result).toHaveLength(mockedWorkingHours.length - 2)
+    expect(result).toHaveLength(mockedWorkingDays.length - 2)
   })
 })

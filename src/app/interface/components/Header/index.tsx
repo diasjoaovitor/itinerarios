@@ -14,9 +14,10 @@ export const Header = () => {
           <Link href="/" active={true}>
             Home
           </Link>
-          <Link href="/funcionarios">Funcionários</Link>
-          <Link href="/itinerarios">Itinerários</Link>
-          <Link href="/intervalos">Intervalos</Link>
+          <Link href="/employees">Funcionários</Link>
+          <Link href="/roles">Funções</Link>
+          <Link href="/working-days">Expedientes</Link>
+          <Link href="/break-times">Intervalos</Link>
         </S.Nav>
       </S.Container>
     </S.Header>

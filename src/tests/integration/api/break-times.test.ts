@@ -7,9 +7,9 @@ import {
   mockedEmployees,
   mockedItineraries,
   mockedRoles,
-  mockedWorkingHours
+  mockedWorkingDays
 } from '@/tests/mocks'
-import { TBreakTime, TDelete, TItinerary, TRole, TUpdate } from '@/types'
+import { TDBBreakTime, TDBDelete, TDBItinerary, TDBUpdate } from '@/types'
 import { getTimestamp, localToUTC } from '@/utils'
 
 const timestamp = getTimestamp()
@@ -34,7 +34,7 @@ describe('Route /api/break-times', () => {
           ...mockedBreakTimes[0],
           start: '10h',
           end: '10h15'
-        } as TBreakTime
+        } as TDBBreakTime
       ])
       .then(() => expect(1 + 1).toBe(3))
       .catch((error: XiorError) => {
@@ -49,28 +49,27 @@ describe('Route /api/break-times', () => {
     const { status, data } = await api.post('/break-times', mockedBreakTimes)
 
     expect(status).toBe(200)
-    expect(data.insertIds).toEqual([5, 6, 7])
+    expect(data.insertIds).toEqual([8, 9, 10, 11, 12, 13])
 
     const { data: result } = await api.get('/break-times')
-    const role = (result as TRole[])[0]
+    const breakTime = (result as TDBBreakTime[])[0]
 
-    expect(role).toEqual({
+    expect(breakTime).toEqual({
       ...mockedBreakTimes[0],
-      breakTimeId: 5,
+      id: 8,
       createdAt: localToUTC(timestamp),
       updatedAt: localToUTC(timestamp)
     })
   })
 
   test('should fail when adding duplicate break times', async () => {
-    const breakTimes: TUpdate<TBreakTime> = {
+    const breakTimes: TDBUpdate<TDBBreakTime> = {
       columns: {
         start: '10:00',
         end: '10:15',
         updatedAt: timestamp
       },
-      idKey: 'breakTimeId',
-      ids: [5, 6]
+      ids: [8, 9]
     }
 
     await api
@@ -90,14 +89,13 @@ describe('Route /api/break-times', () => {
 
     const updatedAt = getTimestamp()
 
-    const breakTimes: TUpdate<TBreakTime> = {
+    const breakTimes: TDBUpdate<TDBBreakTime> = {
       columns: {
         start: '10:00',
         end: '10:15',
         updatedAt
       },
-      idKey: 'breakTimeId',
-      ids: [6]
+      ids: [9]
     }
 
     const { status, data } = await api.patch('/break-times', breakTimes)
@@ -106,12 +104,12 @@ describe('Route /api/break-times', () => {
     expect(data).toEqual({ affectedRows: 1 })
 
     const { data: result } = await api.get('/break-times')
-    const role = (result as TRole[])[1]
+    const breakTime = (result as TDBBreakTime[])[1]
 
-    expect(role.createdAt).not.toBe(updatedAt)
-    expect(role).toEqual({
+    expect(breakTime.createdAt).not.toBe(updatedAt)
+    expect(breakTime).toEqual({
       ...mockedBreakTimes[1],
-      breakTimeId: 6,
+      id: 9,
       start: '10:00:00',
       end: '10:15:00',
       createdAt: localToUTC(timestamp),
@@ -123,24 +121,25 @@ describe('Route /api/break-times', () => {
     await api.post('/roles', [mockedRoles[0]])
     await Promise.all([
       api.post('/employees', [mockedEmployees[3]]),
-      api.post('/working-hours', [mockedWorkingHours[0]])
+      api.post('/working-days', [mockedWorkingDays[0]])
     ])
     await api.post('/itineraries', [
       {
         ...mockedItineraries[0],
-        breakTimeId: 5,
+        id: 5,
         employeeId: 1,
-        workingHourId: 1
-      } as TItinerary
+        workingDayId: 1,
+        morningBreakId: 8,
+        afternoonBreakId: 11
+      } as TDBItinerary
     ])
 
     await api
       .delete('/break-times', {
         data: {
-          idKey: 'breakTimeId',
-          ids: [5],
+          ids: [8],
           table: 'breakTimes'
-        } as TDelete
+        } as TDBDelete
       })
       .then(() => expect(1 + 1).toBe(3))
       .catch((error: XiorError) => {
@@ -156,10 +155,9 @@ describe('Route /api/break-times', () => {
   test('should delete break times correctly', async () => {
     const { status, data } = await api.delete('/break-times', {
       data: {
-        idKey: 'breakTimeId',
-        ids: [6, 7],
+        ids: [9, 10],
         table: 'breakTimes'
-      } as TDelete
+      } as TDBDelete
     })
 
     expect(status).toBe(200)

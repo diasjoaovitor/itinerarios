@@ -8,9 +8,9 @@ import {
   mockedEmployees,
   mockedItineraries,
   mockedRoles,
-  mockedWorkingHours
+  mockedWorkingDays
 } from '@/tests/mocks'
-import { TEmployee, TUpdate } from '@/types'
+import { TDBEmployee, TDBUpdate } from '@/types'
 
 const timestamp = getTimestamp()
 
@@ -50,11 +50,11 @@ describe('Route /api/employees', () => {
 
     const { data: result } = await api.get('/employees')
 
-    const employee = (result as TEmployee[])[0]
+    const employee = (result as TDBEmployee[])[0]
 
     expect(employee).toEqual({
       ...mockedEmployees[0],
-      employeeId: 6,
+      id: 6,
       roleId: 1,
       createdAt: localToUTC(timestamp),
       updatedAt: localToUTC(timestamp)
@@ -67,12 +67,11 @@ describe('Route /api/employees', () => {
 
     const updatedAt = getTimestamp()
 
-    const employees: TUpdate<TEmployee> = {
+    const employees: TDBUpdate<TDBEmployee> = {
       columns: {
         roleId: 1,
         updatedAt
       },
-      idKey: 'employeeId',
       ids: [6, 10]
     }
 
@@ -83,12 +82,12 @@ describe('Route /api/employees', () => {
 
     const { data: result } = await api.get('/employees')
 
-    const employee = (result as TEmployee[])[0]
+    const employee = (result as TDBEmployee[])[0]
 
     expect(employee.createdAt).not.toBe(updatedAt)
     expect(employee).toEqual({
       ...mockedEmployees[0],
-      employeeId: 6,
+      id: 6,
       roleId: 1,
       createdAt: localToUTC(timestamp),
       updatedAt: localToUTC(updatedAt)
@@ -98,7 +97,7 @@ describe('Route /api/employees', () => {
   test('should delete assigned employee correctly', async () => {
     await Promise.all([
       await api.post('/break-times', mockedBreakTimes),
-      await api.post('/working-hours', mockedWorkingHours)
+      await api.post('/working-days', mockedWorkingDays)
     ])
     await api.post(
       '/itineraries',

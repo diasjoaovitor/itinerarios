@@ -1,9 +1,9 @@
-import { TWorkingHour } from '@/types'
+import { TWorkingDay } from '@/types'
 import { getTimestamp } from '@/utils'
 
 const timestamp = getTimestamp()
 
-export const mockedWorkingHours: TWorkingHour[] = [
+export const mockedWorkingDays: TWorkingDay[] = [
   {
     startOfTheWorkingDay: '07:00:00',
     startOfLunch: '11:00:00',

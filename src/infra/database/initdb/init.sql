@@ -1,21 +1,21 @@
 create table roles (
-  roleId int not null auto_increment,
-  roleName varchar(255) not null,
+  id int not null auto_increment,
+  name varchar(255) not null,
   createdAt timestamp not null,
   updatedAt timestamp not null,
-  primary key (roleId)
+  primary key (id)
 );
 
-create table workingHours (
-  workingHourId int not null auto_increment,
+create table workingDays (
+  id int not null auto_increment,
   startOfTheWorkingDay time not null,
   startOfLunch time default null,
   endOfLunch time default null,
   endOfTheWorkingDay time not null,
   createdAt timestamp not null,
   updatedAt timestamp not null,
-  primary key (workingHourId),
-  constraint workingHour unique (
+  primary key (id),
+  constraint workingDay unique (
     startOfTheWorkingDay,
     startOfLunch,
     endOfLunch,
@@ -24,35 +24,37 @@ create table workingHours (
 );
 
 create table breakTimes (
-  breakTimeId int not null auto_increment,
+  id int not null auto_increment,
   start time not null,
   end time not null,
   createdAt timestamp not null,
   updatedAt timestamp not null,
-  primary key (breakTimeId),
+  primary key (id),
   constraint breakTime unique (start, end)
 );
 
 create table employees (
-  employeeId int not null auto_increment,
-  employeeName varchar(255) not null,
+  id int not null auto_increment,
+  name varchar(255) not null,
   roleId int not null,
   createdAt timestamp not null,
   updatedAt timestamp not null,
-  primary key (employeeId),
-  foreign key (roleId) references roles(roleId)
+  primary key (id),
+  foreign key (roleId) references roles(id)
 );
 
 create table itineraries (
-  itineraryId int not null auto_increment,
+  id int not null auto_increment,
   employeeId int not null,
-  workingHourId int not null,
-  breakTimeId int not null,
+  workingDayId int not null,
+  morningBreakId int not null,
+  afternoonBreakId int not null,
   createdAt timestamp not null,
   updatedAt timestamp not null,
-  primary key (itineraryId),
-  foreign key (employeeId) references employees(employeeId),
-  foreign key (workingHourId) references workingHours(workingHourId),
-  foreign key (breakTimeId) references breakTimes(breakTimeId),
-  constraint itinerary unique (employeeId, workingHourId, breakTimeId)
+  primary key (id),
+  foreign key (employeeId) references employees(id),
+  foreign key (workingDayId) references workingDays(id),
+  foreign key (morningBreakId) references breakTimes(id),
+  foreign key (afternoonBreakId) references breakTimes(id),
+  constraint itinerary unique (employeeId, workingDayId, morningBreakId, afternoonBreakId)
 );

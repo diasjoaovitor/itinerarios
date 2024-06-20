@@ -5,22 +5,22 @@ const timestamp = getTimestamp()
 
 export const mockedRoles: TRole[] = [
   {
-    roleName: 'Role 1',
+    name: 'Operador de Caixa',
     createdAt: timestamp,
     updatedAt: timestamp
   },
   {
-    roleName: 'Role 2',
+    name: 'Empacotador',
     createdAt: timestamp,
     updatedAt: timestamp
   },
   {
-    roleName: 'Role 3',
+    name: 'Repositor',
     createdAt: timestamp,
     updatedAt: timestamp
   },
   {
-    roleName: 'Role 4',
+    name: 'Entregador',
     createdAt: timestamp,
     updatedAt: timestamp
   }

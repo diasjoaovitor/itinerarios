@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Theme } from '@/components'
-import { theme } from '@/styles'
 import { StyledJsxRegistry } from './lib'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -17,7 +16,7 @@ const RootLayout = ({
   children: React.ReactNode
 }>) => {
   return (
-    <html lang="pt-br" style={{ backgroundColor: theme.palette.bg }}>
+    <html lang="pt-br">
       <body className={inter.className}>
         <StyledJsxRegistry>
           <Theme>{children}</Theme>
