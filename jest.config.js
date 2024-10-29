@@ -1,9 +1,12 @@
 const nextJest = require('next/jest')
-const dotenv = require('dotenv')
+const { configDotenv } = require('dotenv')
+const { expand } = require('dotenv-expand')
 
-dotenv.config({
-  path: '.env.development'
-})
+expand(
+  configDotenv({
+    path: '.env.development'
+  })
+)
 
 const createJestConfig = nextJest({
   dir: '.'
@@ -14,8 +17,7 @@ const jestConfig = createJestConfig({
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/app/$1',
-    '^@/infra(.*)$': '<rootDir>/src/infra$1',
-    '^@/mocks(.*)$': '<rootDir>/src/tests/mocks$1'
+    '^@/infra(.*)$': '<rootDir>/src/infra$1'
   }
 })
 
