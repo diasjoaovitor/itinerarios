@@ -18,12 +18,12 @@ export class RequestService<T> implements IRepository<T> {
     return await this.handler(this.endpoint)
   }
 
-  getById = async (id: string | number): Promise<T | null> => {
-    return await this.handler(`${this.endpoint}/${id}`)
+  getById = async (id: number): Promise<T | null> => {
+    return await this.handler(`/${this.endpoint}/${id}`)
   }
 
   create = async (body: TCreateParams<T>): Promise<number> => {
-    return await this.handler(this.endpoint, {
+    return await this.handler(`/${this.endpoint}`, {
       method: 'POST',
       body: JSON.stringify(body)
     })
