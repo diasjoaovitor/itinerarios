@@ -1,7 +1,5 @@
-import { MyComponent } from '@/components'
-
-const Home = () => {
-  return <MyComponent>Home</MyComponent>
+const Itineraries = async () => {
+  return <div>itinerarios</div>
 }
 
-export default Home
+export default Itineraries
