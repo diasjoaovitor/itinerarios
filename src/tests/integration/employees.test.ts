@@ -47,7 +47,36 @@ describe('/employees', () => {
       })
       .catch((error) => {
         expect(error.code).toBe('not-found')
+        expect(error.message).toBe('Registro não encontrado.')
         expect(error.status).toBe(404)
+      })
+  })
+
+  it('should return a validation error when get a employee by invalid id', async () => {
+    const request = new EmployeeRequest()
+    await request
+      .getById('a' as any as number)
+      .then(() => {
+        expect(true).toBe(false)
+      })
+      .catch((error) => {
+        expect(error.code).toBe('invalid-id')
+        expect(error.message).toBe('ID inválido')
+        expect(error.status).toBe(400)
+      })
+  })
+
+  it('should return a validation error when create a employee with invalid data', async () => {
+    const request = new EmployeeRequest()
+    await request
+      .create({} as any)
+      .then(() => {
+        expect(true).toBe(false)
+      })
+      .catch((error) => {
+        expect(error.code).toBe('invalid-data')
+        expect(error.message).toBe('Nome é obrigatório')
+        expect(error.status).toBe(400)
       })
   })
 })
