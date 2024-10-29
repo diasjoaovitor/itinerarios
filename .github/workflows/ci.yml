@@ -1,5 +1,5 @@
 name: ci
-on: [pull_request]
+on: [push]
 
 jobs:
   build:
@@ -20,8 +20,11 @@ jobs:
       - name: Linting
         run: npm run lint
 
-      - name: Testing
-        run: npm run test:ci
+      - name: Integration Test
+        run: npm run test
+
+      - name: E2E Test
+        run: npm run cy:run
 
       - name: Build
         run: npm run build

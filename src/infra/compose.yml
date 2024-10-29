@@ -11,5 +11,8 @@ services:
     ports:
       - '3306:3306'
 
+  cypress:
+    image: 'cypress/included:13.6.1'
+
 volumes:
   data:
